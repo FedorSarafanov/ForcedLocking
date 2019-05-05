@@ -1,0 +1,167 @@
+\documentclass[tikz,10pt]{standalone}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage[russian]{babel}
+
+\usepackage{amsmath,amssymb,cmap,pgfplots,pgfplotstable}
+\usetikzlibrary{arrows,calc,intersections,patterns}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{fillbetween}
+
+\usepackage{filecontents}
+\begin{filecontents*}{line2.tsv}
+2.80833333333333e+001 7.19117647058824e+000
+7.00000000000000e+000 7.23345588235294e+000
+5.33333333333333e+000 6.11380347593583e+000
+2.16666666666667e+000 4.83673128342246e+000
+-3.41666666666666e+000  2.68215240641711e+000
+-9.50000000000000e+000  1.81199866310160e+000
+-1.45000000000000e+001  1.82202540106952e+000
+-1.65000000000000e+001  2.62817513368984e+000
+-2.73333333333333e+001  2.73011363636364e+000
+-2.73333333333333e+001  1.76498997326203e+001
+-8.08333333333333e+000  1.76112967914438e+001
+-4.41666666666667e+000  1.76841577540107e+001
+-5.91666666666667e+000  1.91310160427808e+001
+-5.66666666666667e+000  2.04941510695187e+001
+-4.91666666666667e+000  2.51450534759358e+001
+-3.16666666666667e+000  2.88313836898396e+001
+-1.16666666666667e+000  3.19557152406417e+001
+8.33333333333321e-002 3.29157754010695e+001
+1.33333333333333e+000 3.25924131016043e+001
+2.66666666666666e+000 3.09052473262032e+001
+4.66666666666667e+000 2.64894719251337e+001
+6.25000000000000e+000 2.11921791443850e+001
+5.75000000000000e+000 1.94284759358289e+001
+5.91666666666667e+000 1.87062165775401e+001
+2.80833333333333e+001 1.87419786096257e+001
+\end{filecontents*}
+
+\begin{filecontents*}{linetop.tsv}
+-2.73333333333333e+001  1.76498997326203e+001
+-8.08333333333333e+000  1.76112967914438e+001
+-4.41666666666667e+000  1.76841577540107e+001
+-5.91666666666667e+000  1.91310160427808e+001
+-5.66666666666667e+000  2.04941510695187e+001
+-4.91666666666667e+000  2.51450534759358e+001
+-3.16666666666667e+000  2.88313836898396e+001
+-1.16666666666667e+000  3.19557152406417e+001
+8.33333333333321e-002 3.29157754010695e+001
+1.33333333333333e+000 3.25924131016043e+001
+2.66666666666666e+000 3.09052473262032e+001
+4.66666666666667e+000 2.64894719251337e+001
+6.25000000000000e+000 2.11921791443850e+001
+5.75000000000000e+000 1.94284759358289e+001
+5.91666666666667e+000 1.87062165775401e+001
+2.80833333333333e+001 1.87419786096257e+001
+\end{filecontents*}
+
+\begin{filecontents*}{linebot.tsv}
+2.80833333333333e+001 7.19117647058824e+000
+7.00000000000000e+000 7.23345588235294e+000
+5.33333333333333e+000 6.11380347593583e+000
+2.16666666666667e+000 4.83673128342246e+000
+-3.41666666666666e+000  2.68215240641711e+000
+-9.50000000000000e+000  1.81199866310160e+000
+-1.45000000000000e+001  1.82202540106952e+000
+-1.65000000000000e+001  2.62817513368984e+000
+-2.73333333333333e+001  2.73011363636364e+000
+\end{filecontents*}
+
+
+
+
+
+\begin{document}
+    \begin{tikzpicture}
+        \begin{axis}[
+        	legend pos= north east,
+          scale=1.2,
+        	xlabel={$\Delta f$, Гц},
+        	ylabel={$\rho$, a.u.},
+        	xmin=-25,xmax=25,
+        	% ymin=10,ymax=40,
+        ]
+
+
+
+    \addplot [name path=f,pattern=crosshatch, opacity=0.6, draw=none,forget plot] 
+    table  {line2.tsv}\closedcycle;
+    \addplot+[name path=A,draw=none,no markers,forget plot] coordinates {
+    (-30,40) (30,40)};
+
+    \addplot+[name path=B,draw=none,no markers,forget plot] table  {linetop.tsv};
+
+    \addplot[magenta, opacity=0.1] fill between[of=A and B,area legend];
+    \addlegendentry{Синхр-ция};
+
+
+
+    \addplot+[name path=A,draw=none,no markers,forget plot] coordinates {
+    (-30,-40) (30,-40)};
+
+    \addplot+[name path=B,draw=none,no markers,forget plot] table  {linebot.tsv};
+
+    \addplot[blue, opacity=0.5,pattern=crosshatch dots] fill between[of=A and B,area legend];
+    \addlegendentry{Резонанс};
+
+
+
+        \addplot [blue, mark=pentagon*, mark size=1.5pt,] 
+        	table[
+				create on use/f/.style={
+				    create col/expr={
+				    	\thisrow{omega}-422
+				    }
+				},
+        		x=f,
+        		y=a] 
+        {../data/hard12.tsv};
+               \addlegendentry{$u=1.2$ В};
+
+        \addplot [red, mark=triangle*, mark size=1.5pt] 
+        	table[
+				create on use/f/.style={
+				    create col/expr={
+				    	\thisrow{omega}-422
+				    }
+				},
+        		x=f,
+        		y=a] 
+        {../data/hard09.tsv};
+               \addlegendentry{$u=0.9$ В};
+
+        \addplot [purple, mark=*, mark size=1.5pt] 
+          table[
+        create on use/f/.style={
+            create col/expr={
+              \thisrow{omega}-422
+            }
+        },
+            x=f,
+            y=a] 
+        {../data/hard06.tsv};
+               \addlegendentry{$u=0.6$ В};
+
+        \addplot [black, mark=o
+        , mark size=1.5pt] 
+        	table[
+				create on use/f/.style={
+				    create col/expr={
+				    	\thisrow{omega}-422
+				    }
+				},
+        		x=f,
+        		y=a] 
+        {../data/hard05.tsv};
+               \addlegendentry{$u=0.5$ В};
+
+
+
+    % \addplot [name path=f,fill=black, opacity=0.6, draw=none] 
+    % table  {line2.tsv}\closedcycle;
+
+        \end{axis}
+    \end{tikzpicture}
+\end{document}

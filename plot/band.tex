@@ -1,0 +1,133 @@
+\documentclass[tikz,10pt]{standalone}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage[russian]{babel}
+
+\usepackage{amsmath,amssymb,cmap,pgfplots,pgfplotstable}
+\usetikzlibrary{arrows,calc,intersections,patterns}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{fillbetween}
+
+\begin{document}
+    \begin{tikzpicture}
+        \begin{axis}[
+        	legend pos= north west,
+        	ylabel={$\Delta f$, Гц},
+        	xlabel={$u$, В},
+        	% xmin=-10,xmax=7.5,
+        	% ymin=10,ymax=40,
+        ]
+        \addplot [blue, mark=*, mark size=1.5pt,] 
+        	table[
+				create on use/uder/.style={
+				    create col/expr={
+				    	\thisrow{omega4}-\thisrow{omega1}
+				    }
+				},
+				create on use/zaxvat/.style={
+				    create col/expr={
+				    	\thisrow{omega3}-\thisrow{omega2}
+				    }
+				},
+        		x=u,
+        		y=uder] 
+        {../data/work1_346.tsv};
+        \addlegendentry{Удержание};
+
+        \addplot [red, mark=triangle*, mark size=1.5pt,] 
+        	table[
+				create on use/uder/.style={
+				    create col/expr={
+				    	\thisrow{omega4}-\thisrow{omega1}
+				    }
+				},
+				create on use/zaxvat/.style={
+				    create col/expr={
+				    	\thisrow{omega3}-\thisrow{omega2}
+				    }
+				},
+        		x=u,
+        		y=zaxvat] 
+        {../data/work1_346.tsv};
+        \addlegendentry{Захват};
+
+    %     \addplot [red, mark=*, mark size=1.5pt] 
+    %     	table[
+				% create on use/f/.style={
+				%     create col/expr={
+				%     	\thisrow{omega}-422
+				%     }
+				% },
+    %     		x=f,
+    %     		y=a] 
+    %     {../data/hard09.tsv};
+
+    %     \addplot [black, mark=*, mark size=1.5pt] 
+    %     	table[
+				% create on use/f/.style={
+				%     create col/expr={
+				%     	\thisrow{omega}-422
+				%     }
+				% },
+    %     		x=f,
+    %     		y=a] 
+    %     {../data/hard05.tsv};
+
+    %     \addplot [purple, mark=*, mark size=1.5pt] 
+    %     	table[
+				% create on use/f/.style={
+				%     create col/expr={
+				%     	\thisrow{omega}-422
+				%     }
+				% },
+    %     		x=f,
+    %     		y=a] 
+    %     {../data/hard06.tsv};
+  %       \addlegendentry{$u=0.7$ В};
+
+  %       \addplot [red, mark=o, mark size=1.5pt,] 
+  %       	table[
+		% 		create on use/f/.style={
+		% 		    create col/expr={
+		% 		    	\thisrow{omega}-420
+		% 		    }
+		% 		},
+  %       		x=f,
+  %       		y=ampl2] 
+  %       {../data/work1_2.tsv};
+  %       \addlegendentry{$u=0.4$ В};
+
+  %       \addplot [purple, mark=triangle*, mark size=1.5pt,] 
+  %       	table[
+		% 		create on use/f/.style={
+		% 		    create col/expr={
+		% 		    	\thisrow{omega}-420
+		% 		    }
+		% 		},
+  %       		x=f,
+  %       		y=ampl3] 
+  %       {../data/work1_3.tsv};
+  %       \addlegendentry{$u=1.3$ В};
+
+  %       \addplot [green!10!black, mark=pentagon*, mark size=1.5pt,] 
+  %       	table[
+		% 		create on use/f/.style={
+		% 		    create col/expr={
+		% 		    	\thisrow{omega}-420
+		% 		    }
+		% 		},
+  %       		x=f,
+  %       		y=ampl4] 
+  %       {../data/work1_4.tsv};
+  %       \addlegendentry{$u=1.7$ В};
+
+
+
+  %   \addplot [name path=f,fill=magenta, opacity=0.2, draw=none] 
+		% table  {area.tsv}\closedcycle;
+
+
+        \end{axis}
+    \end{tikzpicture}
+\end{document}
